@@ -1,13 +1,45 @@
-export function selectBreeds(arr, container) {
+function selectBreeds(arr, select) {
   const markup = arr
     .map(
-      item => `<option value="${item.id}" class="breed">${item.name}</option>`
+      breed =>
+        `<option value="${breed.id}" class="breed">${breed.name}</option>`
     )
     .join('');
-  container.insertAdjacentHTML('afterbegin', markup);
+  select.innerHTML = markup;
 }
 
-export function renderingCatInfo(link, name, textAbout, list, container) {
-  const markupCard = `<div class="cat-info-thumb"><img src='${link}' class='cat-info-img' alt='cat' width='350'></div><div class='cat-info-container'><h2 class='cat-info-title'>${name}</h2><p class='cat-info-desc'>${textAbout}</p><p class='cat-info-temp'><span class='cat-info-temp-span'>Temperament:</span> ${list}</p></div>`;
+function renderingCatInfo(url, breed, content, temperament, container) {
+  const markupCard = `
+    <div class="cat-info">
+      <img src="${url}" class="breed-img" alt="breed" />
+    </div>
+    <div class="breed-container">
+      <h2 class="breed-title">${breed}</h2>
+      <p class="breed-description">${content}</p>
+      <h5 class="breed-temperament">
+        <span class="style-temperament">Temperament:</span> ${temperament}
+      </h5>
+    </div>
+    `;
   container.innerHTML = markupCard;
 }
+export { selectBreeds, renderingCatInfo };
+
+// function createMarkap(arr) {
+//   return arr
+//     .map(
+//       ({
+//         date,
+//         day: {
+//           avgtemp_c,
+//           condition: { icon, text },
+//         },
+//       }) => `<li>
+//         <img src="${icon}" alt="${text}" />
+//         <p>${text}</p>
+//         <h2>${date}</h2>
+//         <h3>${avgtemp_c}</h3>
+//       </li>`
+//     )
+//     .join("");
+// }
