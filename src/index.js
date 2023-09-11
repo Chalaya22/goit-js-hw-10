@@ -9,11 +9,14 @@ const refs = {
   loader: document.querySelector('.loader'),
 };
 
+refs.breedsSelect.addEventListener('change', createCatCard);
+
 fetchBreeds(refs.loader)
-  .then(arrCatBreeds => {
-    console.log(arrCatBreeds); //масив котиків
+  .then(breeds => {
+    console.log(breeds); //масив котиків
+    refs.loader.classList.remove('visually-hidden');
     refs.breedsSelect.classList.remove('visually-hidden'); // бачимо селектор
-    selectBreeds(arrCatBreeds, refs.breedsSelect); //в парвметри функціі розмітки селектора підставляємо наш масив та селектор
+    selectBreeds(breeds, refs.breedsSelect); //в парвметри функціі розмітки селектора підставляємо наш масив та селектор
     new SlimSelect({
       // з бібліотеки берем стиль селектора
       select: refs.breedsSelect,
@@ -22,39 +25,33 @@ fetchBreeds(refs.loader)
       },
     });
   })
-  .catch(error => {
-    Notify.failure(error.message, {
-      cssAnimationStyle: 'zoom',
-      closeButton: true,
-      position: 'center-top',
-    });
+  .catch(err => {
+    console.log(err);
+    Notiflix.Notify.failure(
+      'Oops! Something went wrong! Try reloading the page!'
+    );
   })
   .finally(() => {
-    refs.loader.classList.add('visually-hidden'); //не бачимо завантажувач
+    refs.loader.classList.add('visually-hidden');
   });
 
-refs.breedsSelect.addEventListener('change', createCatCard); // прослуховувач на селектор
-
 function createCatCard(evt) {
-  fetchCatByBreed(evt.target.value, refs.loader, refs.catInfo)
-    .then(cat => {
-      // console.log(cat);
-
-      const { breeds, url } = cat[0];
+  refs.loader.classList.remove('visually-hidden');
+  refs.catInfo.classList.add('visually-hidden');
+  fetchCatByBreed(evt.target.value)
+    .then(breed => {
+      const { breeds, url } = breed[0];
       const { name, description, temperament } = breeds[0];
-      renderingCatInfo(url, name, description, temperament, refs.catInfo); //з масиву котиків вибрали ті властивості які нас цікавлять
-      refs.catInfo.classList.remove('visually-hidden'); //бачимо інфу
-      refs.loader.classList.add('visually-hidden'); // не бачимо завантажувач
+      renderingCatInfo(url, name, description, temperament, refs.catInfo);
     })
-    .catch(error => {
-      Notify.failure(error.message, {
-        cssAnimationStyle: 'zoom',
-        closeButton: true,
-        position: 'center-top',
-      });
+    .catch(err => {
+      console.log(err);
+      Notiflix.Notify.failure(
+        'Oops! Something went wrong! Try reloading the page!'
+      );
     })
     .finally(() => {
-      refs.catInfo.classList.remove('visually-hidden'); ////бачимо інфу
-      refs.loader.classList.add('visually-hidden'); // не бачимо завантажувач
+      refs.catInfo.classList.remove('visually-hidden');
+      refs.loader.classList.add('visually-hidden');
     });
 }

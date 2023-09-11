@@ -1,6 +1,6 @@
 .visually-hidden {
   display: none;
-  clip-path: inset(100%);
+  /* clip-path: inset(100%); */
 }
 
 .loader {
