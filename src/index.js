@@ -11,12 +11,11 @@ const refs = {
 
 refs.breedsSelect.addEventListener('change', createCatCard);
 
-fetchBreeds(refs.loader)
+fetchBreeds()
   .then(breeds => {
-    console.log(breeds); //масив котиків
-    refs.loader.classList.remove('visually-hidden');
-    refs.breedsSelect.classList.remove('visually-hidden'); // бачимо селектор
-    selectBreeds(breeds, refs.breedsSelect); //в парвметри функціі розмітки селектора підставляємо наш масив та селектор
+    console.log(breeds);
+    refs.breedsSelect.classList.remove('is-hidden');
+    selectBreeds(breeds, refs.breedsSelect);
     new SlimSelect({
       // з бібліотеки берем стиль селектора
       select: refs.breedsSelect,
@@ -32,15 +31,15 @@ fetchBreeds(refs.loader)
     );
   })
   .finally(() => {
-    refs.loader.classList.add('visually-hidden');
+    refs.loader.classList.add('is-hidden');
   });
 
 function createCatCard(evt) {
-  refs.loader.classList.remove('visually-hidden');
-  refs.catInfo.classList.add('visually-hidden');
-  fetchCatByBreed(evt.target.value)
-    .then(breed => {
-      const { breeds, url } = breed[0];
+  refs.catInfo.classList.add('is-hidden');
+  refs.loader.classList.remove('is-hidden');
+  fetchCatByBreed(evt.currentTarget.value)
+    .then(data => {
+      const { breeds, url } = data[0];
       const { name, description, temperament } = breeds[0];
       renderingCatInfo(url, name, description, temperament, refs.catInfo);
     })
@@ -51,7 +50,7 @@ function createCatCard(evt) {
       );
     })
     .finally(() => {
-      refs.catInfo.classList.remove('visually-hidden');
-      refs.loader.classList.add('visually-hidden');
+      refs.catInfo.classList.remove('is-hidden');
+      refs.loader.classList.add('is-hidden');
     });
 }
