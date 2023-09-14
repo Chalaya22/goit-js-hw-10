@@ -8,17 +8,17 @@ const refs = {
   catInfo: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
 };
-// refs.loader.classList.replace('loader', 'is-hidden');
-// refs.catInfo.classList.add('is-hidden');
 
 refs.breedsSelect.addEventListener('change', createCatCard);
+refs.loader.classList.remove('is-hidden');
 
 fetchBreeds()
-  .then(data => {
-    refs.loader.classList.remove('is-hidden');
-    refs.catInfo.classList.add('is-hidden');
+  .then(breeds => {
+    console.dir(breeds);
+    refs.breedsSelect.classList.remove('is-hidden');
+
+    selectBreeds(breeds, refs.breedsSelect);
     new SlimSelect({
-      // з бібліотеки берем стиль селектора
       select: refs.breedsSelect,
       settings: {
         placeholderText: 'Вибери котика)',
@@ -27,35 +27,24 @@ fetchBreeds()
   })
   .catch(err => {
     console.log(err);
-    Notiflix.Notify.failure(
-      'Oops! Something went wrong! Try reloading the page!'
-    );
+    // Notiflix.Notify.failure(
+    //   'Oops! Something went wrong! Try reloading the page!'
+    // );
   })
   .finally(() => {
     refs.loader.classList.add('is-hidden');
-    refs.catInfo.classList.add('is-hidden');
   });
 
+refs.breedsSelect.addEventListener('change', createCatCard);
 function createCatCard(evt) {
-  refs.loader.classList.replace('is-hidden', 'loader');
-  refs.breedsSelect.classList.add('is-hidden');
-  refs.catInfo.classList.add('is-hidden');
   fetchCatByBreed(evt.currentTarget.value)
-    .then(data => {
-      refs.loader.classList.replace('loader', 'is-hidden');
-      refs.breedsSelect.classList.remove('is-hidden');
-      const { breeds, url } = data[0];
-      const { name, description, temperament } = breeds[0];
-      renderingCatInfo(url, name, description, temperament, refs.catInfo);
-    })
+    .then(breed => console.log(breed))
+
     .catch(err => {
       console.log(err);
-      Notiflix.Notify.failure(
-        'Oops! Something went wrong! Try reloading the page!'
-      );
+      // Notiflix.Notify.failure(
+      //   'Oops! Something went wrong! Try reloading the page!'
+      // );
     })
-    .finally(() => {
-      refs.catInfo.classList.remove('is-hidden');
-      refs.loader.classList.add('is-hidden');
-    });
+    .finally(() => {});
 }
