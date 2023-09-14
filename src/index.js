@@ -27,9 +27,9 @@ fetchBreeds()
   })
   .catch(err => {
     console.log(err);
-    // Notiflix.Notify.failure(
-    //   'Oops! Something went wrong! Try reloading the page!'
-    // );
+    Notiflix.Notify.failure(
+      'Oops! Something went wrong! Try reloading the page!'
+    );
   })
   .finally(() => {
     refs.loader.classList.add('is-hidden');
@@ -37,14 +37,25 @@ fetchBreeds()
 
 refs.breedsSelect.addEventListener('change', createCatCard);
 function createCatCard(evt) {
+  // evt.preventDefault();
+  refs.loader.classList.remove('is-hidden');
+  refs.catInfo.classList.add('is-hidden');
   fetchCatByBreed(evt.currentTarget.value)
-    .then(breed => console.log(breed))
-
+    .then(breed => {
+      const { breeds, url } = breed[0];
+      const { name, description, temperament } = breeds[0];
+      renderingCatInfo(url, name, description, temperament, refs.catInfo);
+      refs.catInfo.classList.remove('is-hidden');
+      refs.loader.classList.add('is-hidden');
+    })
     .catch(err => {
       console.log(err);
-      // Notiflix.Notify.failure(
-      //   'Oops! Something went wrong! Try reloading the page!'
-      // );
+      Notiflix.Notify.failure(
+        'Oops! Something went wrong! Try reloading the page!'
+      );
     })
-    .finally(() => {});
+    .finally(() => {
+      refs.catInfo.classList.remove('is-hidden');
+      refs.loader.classList.add('is-hidden');
+    });
 }
