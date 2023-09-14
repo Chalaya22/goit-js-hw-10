@@ -1,8 +1,10 @@
 .is-hidden {
   display: none;
+  position: absolute;
 }
 
 .loader {
+  position: relative;
   animation: rotate 1s infinite;
   height: 50px;
   width: 50px;

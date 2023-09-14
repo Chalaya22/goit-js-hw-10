@@ -7,10 +7,12 @@ const refs = {
   breedsSelect: document.querySelector('.breed-select'),
   catInfo: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
+  error: document.querySelector('.error'),
 };
 
-refs.breedsSelect.addEventListener('change', createCatCard);
-refs.loader.classList.remove('is-hidden');
+refs.error.classList.add('is-hidden');
+
+refs.breedsSelect.addEventListener('change', catCardHaddler);
 
 fetchBreeds()
   .then(breeds => {
@@ -25,37 +27,33 @@ fetchBreeds()
       },
     });
   })
-  .catch(err => {
-    console.log(err);
-    Notiflix.Notify.failure(
-      'Oops! Something went wrong! Try reloading the page!'
-    );
-  })
-  .finally(() => {
-    refs.loader.classList.add('is-hidden');
-  });
+  .catch(fetchErrorHandle);
 
-refs.breedsSelect.addEventListener('change', createCatCard);
-function createCatCard(evt) {
-  // evt.preventDefault();
+function catCardHaddler(evt) {
+  evt.preventDefault();
   refs.loader.classList.remove('is-hidden');
+  refs.breedsSelect.classList.add('is-hidden');
   refs.catInfo.classList.add('is-hidden');
-  fetchCatByBreed(evt.currentTarget.value)
+
+  const form = evt.currentTarget;
+  const searchQuiery = form.value;
+
+  fetchCatByBreed(searchQuiery)
     .then(breed => {
       const { breeds, url } = breed[0];
       const { name, description, temperament } = breeds[0];
       renderingCatInfo(url, name, description, temperament, refs.catInfo);
       refs.catInfo.classList.remove('is-hidden');
+      refs.catInfo.classList.add('is-hidden');
       refs.loader.classList.add('is-hidden');
     })
-    .catch(err => {
-      console.log(err);
-      Notiflix.Notify.failure(
-        'Oops! Something went wrong! Try reloading the page!'
-      );
-    })
-    .finally(() => {
-      refs.catInfo.classList.remove('is-hidden');
-      refs.loader.classList.add('is-hidden');
-    });
+    .catch(fetchErrorHandle);
+}
+function fetchErrorHandle(error) {
+  refs.breedsSelect.classList.remove('is-hidden');
+  refs.loader.classList.add('is-hidden');
+
+  Notify.failure('Oops! Something went wrong! !', {
+    position: 'center-center',
+  });
 }
